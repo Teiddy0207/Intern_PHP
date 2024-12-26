@@ -33,7 +33,7 @@ class MarketingController extends Controller
 
         // Lấy danh sách các trường và đếm số học sinh
         $schools = Login::select('school', DB::raw('COUNT(*) as contact_students_count'))
-            ->whereNotNull('phone')
+            ->where('phone', '!=', '')
             ->where('isGrantedAccount', 1)
             ->where('deletePending', '!=', 1)
             ->where('isTeacherAccount', 0)
@@ -41,18 +41,43 @@ class MarketingController extends Controller
             ->where('phone', '!=', $hotlinePhone)
             ->groupBy('school')
             ->get();
-    
+
         return response()->json(['schools' => $schools]);
 
+
+        //debugging
         // $x = 6;
         // return response()->json($x);
     }
-    
-    
+
+    public function getCountClass()
+    {
+
+        $hotlinePhone = '1800599989';
+        $classes = Login::select(
+            'class',
+            'root_schools.name as school_name',
+            DB::raw('COUNT(*) as contact_students_count_in_classes')
+        )
+            ->join('root_schools', 'logins.school', '=', 'root_schools.id') // Kết nối với bảng root_schools
+            ->where('phone', '!=', '')
+            ->where('isGrantedAccount', 1)
+            ->where('deletePending', '!=', 1)
+            ->where('isTeacherAccount', 0)
+            ->where('isTesterAccount', 0)
+            ->where('phone', '!=', $hotlinePhone)
+            ->groupBy('class')
+            ->get();
+
+        return response()->json(['classes' => $classes]);
+    }
 
 
 
-    public function index(){
+
+
+    public function index()
+    {
 
         return view("admin.marketing.index");
     }
@@ -284,7 +309,7 @@ class MarketingController extends Controller
             return response()->json(['message' => 'Không tìm thấy!'], 404);
         }
 
-        if($consultation->sale_id != $currentUserId){
+        if ($consultation->sale_id != $currentUserId) {
             return response()->json(['message' => 'Không có quyền chỉnh sửa!'], 403);
         }
 
@@ -313,7 +338,7 @@ class MarketingController extends Controller
             return response()->json(['message' => 'Không tìm thấy!'], 404);
         }
 
-        if($consultation->sale_id != $currentUserId){
+        if ($consultation->sale_id != $currentUserId) {
             return response()->json(['message' => 'Không có quyền xóa!'], 403);
         }
 
@@ -328,7 +353,8 @@ class MarketingController extends Controller
             'data' => $consultation,
         ], 200);
     }
-    public function statistical(){
+    public function statistical()
+    {
         return view("admin.marketing.statistical");
     }
 
@@ -352,9 +378,10 @@ class MarketingController extends Controller
         $answeredCalls = $querySaleMarketings->where('feedback', '!=', 1)->count();
         $unansweredCalls = $querySaleMarketings->where('feedback', 1)->count();
 
-        $queryStudentCalls = SaleMarketing::leftJoin('logins', 'logins.uID', '=', 'sale_marketing.student_id')->distinct('sale_marketing.student_id');;
+        $queryStudentCalls = SaleMarketing::leftJoin('logins', 'logins.uID', '=', 'sale_marketing.student_id')->distinct('sale_marketing.student_id');
+        ;
         $grantedStudentCalls = $queryStudentCalls->where('isGrantedAccount', 1)->count();
-        $notGrantedStudentCalls =$queryStudentCalls->where('isGrantedAccount', 0)->count();
+        $notGrantedStudentCalls = $queryStudentCalls->where('isGrantedAccount', 0)->count();
 
         $data = [
             [

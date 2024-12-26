@@ -111,8 +111,9 @@ Route::group(
         Route::get('/api/marketing/statistical', 'MarketingController@statisticalAPI')->middleware('can:saleMarketing');
         Route::get('/api/marketing/feedback-data', 'MarketingController@getFeedbackData')->middleware('can:saleMarketing');
          
-        //codeQuangAnh getSchool
-        Route::get(uri: '/api/getCountSchool', action: 'MarketingController@getCountSchool' );
+        //codeQuangAnh: đếm số lượng học sinh có thông tin liên lạc trong hộp trường và hộp lớp 
+        Route::get(uri: '/api/getCountSchool', action: 'MarketingController@getCountSchool');
+        Route::get(uri: '/api/getCountClass', action: 'MarketingController@getCountClass');
 
 
         Route::resource('/user', 'UsersController')->middleware('can:infoUser');

@@ -74,41 +74,6 @@ function getDistrict(provinceId) {
     });
 }
 
-// async function getSchool(districtId) {
-//     // Gửi AJAX để lấy danh sách trường
-//     let data;
-//     try {
-//         const response = await fetch('/admin/api/getCountSchool');
-//         if (!response.ok) {
-//             throw new Error(`HTTP error! status: ${response.status}`);
-//         }
-//         data = await response.json();
-//         console.log(data)
-//     } catch (error) {
-//         console.error('Error:', error);
-//     }
-
-//     $.ajax({
-//         url: 'api/schools',
-//         method: 'GET',
-//         data: {
-//             district_id: districtId
-//         },
-
-//         success: function (response) {
-//             var options = '<option value="0">-Chọn trường-</option>';
-            
-            
-            
-//             response.schools.forEach(function (school) {
-//                 var studentCount = school.contact_students_count;
-//                 options += `<option value="${school.id}">${school.name} (${data})</option>`;
-//             });
-//             $('#schoolSelect').html(options);
-
-//         }
-//     });
-// }
 
 //code của quang anh 
 async function getSchool(districtId) {
@@ -161,8 +126,58 @@ async function getSchool(districtId) {
 
 
 
-function getClass(schoolId) {
-    // Gửi AJAX để lấy danh sách lớp
+// async function getClass(schoolId) {
+
+//     let classData;
+//     try {
+//         const response = await fetch('/admin/api/getCountClass');
+//         if (!response.ok) {
+//             throw new Error(`HTTP error! status: ${response.status}`);
+//         }
+//         classData = await response.json(); 
+//         console.log('School Data:', classData); 
+//     } catch (error) {
+//         console.error('Error in here:', error);
+//         return; 
+//     }
+//     // Gửi AJAX để lấy danh sách lớp
+//     $.ajax({
+//         url: 'api/classes',
+//         method: 'GET',
+//         data: {
+//             school_id: schoolId
+//         },
+//         success: function (response) {
+//             // Xóa các option cũ và thêm option mới
+//             var classOptions = '<option value="0">-Chọn lớp-</option>';
+//             response.classes.forEach(function (classItem) {
+//                 classOptions += '<option value="' + classItem.id + '">' + classItem.class_code +
+//                     '</option>';
+//             });
+//             $('#classSelect').html(classOptions).trigger('change');
+//         },
+//         error: function () {
+//             alert('Không thể tải danh sách lớp, vui lòng thử lại!');
+//         }
+//     });
+// }
+
+async function getClass(schoolId) {
+    let classData;
+    try {
+        // Gọi API để lấy số lượng học sinh theo lớp
+        const response = await fetch(`/admin/api/getCountClass?schoolId=${schoolId}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        classData = await response.json(); 
+        console.log('Class Data:', classData); // Kiểm tra dữ liệu lớp
+    } catch (error) {
+        console.error('Error:', error);
+        return; 
+    }
+
+    // Gửi yêu cầu AJAX để lấy danh sách lớp từ API
     $.ajax({
         url: 'api/classes',
         method: 'GET',
@@ -170,19 +185,38 @@ function getClass(schoolId) {
             school_id: schoolId
         },
         success: function (response) {
-            // Xóa các option cũ và thêm option mới
+            console.log('Response from classes API:', response); // Kiểm tra phản hồi từ API lớp
             var classOptions = '<option value="0">-Chọn lớp-</option>';
-            response.classes.forEach(function (classItem) {
-                classOptions += '<option value="' + classItem.id + '">' + classItem.class_code +
-                    '</option>';
+            
+            // Tạo ánh xạ số lượng học sinh theo lớp
+            let studentCountMap = {};
+            classData.classes.forEach(function (classItem) {
+                // Giả định classItem.class là ID lớp 
+                studentCountMap[classItem.class] = classItem.contact_students_count_in_classes; 
             });
-            $('#classSelect').html(classOptions).trigger('change');
+
+           
+            response.classes.forEach(function (classItem) {
+                // Lấy số học sinh tương ứng với ID lớp
+                var studentCount = studentCountMap[classItem.id] || 0; // Sử dụng classItem.id để ánh xạ
+                classOptions += `<option value="${classItem.id}">${classItem.class_code} (${studentCount})</option>`;
+            });
+
+            $('#classSelect').html(classOptions).trigger('change'); // Cập nhật dropdown lớp
         },
         error: function () {
             alert('Không thể tải danh sách lớp, vui lòng thử lại!');
         }
     });
 }
+
+
+
+
+
+
+
+
 $(document).ready(function () {
     getSchool(0);
     getFeedback();
