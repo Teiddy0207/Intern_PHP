@@ -194,13 +194,6 @@ async function getClass(schoolId) {
 }
 
 
-
-
-
-
-
-
-
 $(document).ready(function () {
     getSchool(0);
     getFeedback();
@@ -647,6 +640,8 @@ $(document).ready(function () {
                 $('#feedbackContent').val(''); // Xóa nội dung
                 $('#feedbackSelectParent').val('0');// Reset giá trị chọn  
                 closeFeedbackForm();
+                // gọi hàm feedback -> cập nhật luôn phản hồihồi
+                getFeedback();
             })
             .catch(error => {
                 console.error(error);
@@ -680,7 +675,7 @@ $(document).ready(function () {
                     });
                 })
                 .catch(error => {
-                    console.error('Lỗi khi lấy phản hồi cha:', error);
+                    console.error('Lỗi khi lấy phản hồi parent_key:', error);
                     alert('Có lỗi xảy ra, vui lòng thử lại!');
                 });
         });
