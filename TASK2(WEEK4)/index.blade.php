@@ -4,7 +4,7 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link href="{{ asset('css/marketing/style.css') }}" rel="stylesheet" />
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
 
 @endpush
@@ -38,7 +38,11 @@
             <select id="feedbackSelect" class="" style="width: 100%;height: 100%">
                 <option value="0">-Chọn phản hồi PH-</option>
             </select>
+
         </div>
+
+        
+            
         <div class="col-md-3">
             <select id="numConsultationSelect" class="form-control select2" style="width: 100%;">
                 <option value="0" selected>-Số lần tư vấn-</option>
@@ -79,9 +83,7 @@
     </div>
     <div class="row mb-3 justify-content-center">
         <div class="col-md-2 d-flex ">
-            <button id="filterButton" class="btn btn-primary mb-2" style="flex: 1;">Lọc</button>
-            <button id="feedback" class="btn btn-secondary" style="flex: 1;" onclick="openFeedbackForm()">Phản
-                hồi</button>
+            <button id="filterButton" class="btn btn-primary mb-2 mr-2" style="flex: 1;">Lọc</button>
         </div>
     </div>
 </div>
@@ -90,6 +92,9 @@
         <div style="text-align: left">
             <input type="text" id="searchInput" placeholder="Tìm kiếm">
             <button id="searchButton">Tìm kiếm</button>
+            <button id="feedback" class="btn btn-secondary" style="flex: 1;" onclick="openFeedbackForm()">Phản
+                hồi</button>
+
         </div>
     </div>
 </div>
@@ -128,9 +133,9 @@
                 <textarea class="form-control" id="feedbackContent" name="feedbackContent" rows="4" required></textarea>
 
                 <!-- chọn parent key  -->
-                <label for="parentKeySelect">Chọn loại phản hồi</label>
+                <label for="parentKeySelect">Chọn phản hồi:</label>
                 <select id="feedbackSelectParent">
-                <option value="0">-Chọn phản hồi PH-</option>
+                    <option value="0">-Chọn phản hồi PH-</option>
                 </select>
 
             </div>
@@ -142,13 +147,30 @@
     </div>
 </div>
 
-<div id="successPopup"
+<!-- <div id="successPopup"
     style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background-color:white; border:1px solid #ccc; padding:20px; z-index:1000;">
     <h4>Thêm thành công!</h4>
     <p>Phản hồi của bạn đã được lưu!</p>
     <button id="closePopup">Đóng</button>
-</div>
+</div> -->
 
+<div id="overlay" style="display:none;"></div>
+<div id="successPopup">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Thêm thành công!</h5>
+            <a href="#" class="close">&times;</a>
+        </div>
+        <div class="modal-body">
+            <p>Phản hồi của bạn đã được lưu!</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-primary" id="closePopup">Đóng</a>
+        </div>
+    </div>
+
+</div>
+</div>
 </div>
 
 @include('admin.marketing.consultation-modal')
@@ -192,12 +214,40 @@
 
 
 <style>
-    #successPopup {
+    /* #successPopup {
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
     #successPopup button {
         margin-top: 10px;
+    } */
+
+
+
+
+    #successPopup {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -60%);
+        /* Vị trí xuất hiện ban đầu */
+
+        border-radius: 8px;
+        /* Bo tròn góc */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        /* Hiệu ứng bóng */
+        padding: 20px;
+        z-index: 1000;
+        transition: opacity 0.3s ease, transform 0.3s ease;/
+    }
+
+
+
+    .modal-content {
+        background: #fff;
+        border-radius: 5px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     }
 
     /* Hiển thị nền tối khi form xuất hiện */
