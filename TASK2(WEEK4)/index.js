@@ -632,17 +632,20 @@ $(document).ready(function () {
     }
 
         // Gửi phản hồi
-        $(document).on('click', '#btn_save_fb', function (e) {
+    $(document).on('click', '#btn_save_fb', function (e) {
             e.preventDefault();
             const feedbackContent = $('#feedbackContent').val();
-    
+            const parentKey = $('#feedbackSelectParent').val(); // Giả sử bạn có dropdown cho parent_key  
+
             axios.post('api/feedback/store', {
                 feedbackContent: feedbackContent,
+                parent_key: parentKey,
                 _token: window.csrfToken
             })
             .then(response => {
                 $('#successPopup').show();
                 $('#feedbackContent').val(''); // Xóa nội dung
+                $('#feedbackSelectParent').val('0');// Reset giá trị chọn  
                 closeFeedbackForm();
             })
             .catch(error => {
@@ -651,7 +654,34 @@ $(document).ready(function () {
             });
         });
     
-        $(document).on('click', '#closePopup', function () {
+    $(document).on('click', '#closePopup', function () {
             $('#successPopup').hide();
         });
       
+
+    $(document).ready(function () {
+            // Gọi API lấy danh sách parent feedbacks
+           
+            axios.get('api/feedback/parents')
+                .then(response => {
+                    const feedbacks = response.data.feedbacks;
+                    const $dropdown = $('#feedbackSelectParent');
+                    
+                    // Xóa hết các option hiện tại trừ option mặc định
+                    $dropdown.find('option:not(:first)').remove();
+        
+                    // Duyệt qua danh sách feedbacks và thêm vào dropdown
+                    feedbacks.forEach(feedback => {
+                        $dropdown.append(`
+                            <option value="${feedback.key}">
+                                ${feedback.description}
+                            </option>
+                        `);
+                    });
+                })
+                .catch(error => {
+                    console.error('Lỗi khi lấy phản hồi cha:', error);
+                    alert('Có lỗi xảy ra, vui lòng thử lại!');
+                });
+        });
+        

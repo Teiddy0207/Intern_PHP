@@ -7,7 +7,7 @@
 
 
 
-    @endpush
+@endpush
 
 @section('content')
 
@@ -80,7 +80,8 @@
     <div class="row mb-3 justify-content-center">
         <div class="col-md-2 d-flex ">
             <button id="filterButton" class="btn btn-primary mb-2" style="flex: 1;">Lọc</button>
-            <button id="feedback" class="btn btn-secondary" style="flex: 1;" onclick="openFeedbackForm()">Phản hồi</button>
+            <button id="feedback" class="btn btn-secondary" style="flex: 1;" onclick="openFeedbackForm()">Phản
+                hồi</button>
         </div>
     </div>
 </div>
@@ -116,8 +117,8 @@
     </div>
 </div>
 
-  <!-- Modal Feedback -->
-  <div id="feedbackModal" class="modal-overlay" style="display: none;">
+<!-- Modal Feedback -->
+<div id="feedbackModal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
         <h4 class="mb-3">Phản hồi</h4>
         <form>
@@ -125,6 +126,13 @@
                 @CSRF
                 <label for="feedbackContent" class="form-label">Nội dung phản hồi</label>
                 <textarea class="form-control" id="feedbackContent" name="feedbackContent" rows="4" required></textarea>
+
+                <!-- chọn parent key  -->
+                <label for="parentKeySelect">Chọn loại phản hồi</label>
+                <select id="feedbackSelectParent">
+                <option value="0">-Chọn phản hồi PH-</option>
+                </select>
+
             </div>
             <div class="d-flex justify-content-end">
                 <button type="button" class="btn btn-secondary me-2" onclick="closeFeedbackForm()">Hủy</button>
@@ -134,7 +142,8 @@
     </div>
 </div>
 
-<div id="successPopup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background-color:white; border:1px solid #ccc; padding:20px; z-index:1000;">
+<div id="successPopup"
+    style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background-color:white; border:1px solid #ccc; padding:20px; z-index:1000;">
     <h4>Thêm thành công!</h4>
     <p>Phản hồi của bạn đã được lưu!</p>
     <button id="closePopup">Đóng</button>
@@ -159,7 +168,7 @@
         var currentUserName = "{{ Auth::user()->name }}";
         var currentUserId = "{{ Auth::user()->id }}";
         window.csrfToken = '{{ csrf_token() }}';
-    
+
 
     </script>
     <script src="{{ asset('js/marketing/index.js') }}"></script>
@@ -170,7 +179,7 @@
         });
 
 
-        
+
     </script>
 
 
@@ -183,14 +192,14 @@
 
 
 <style>
+    #successPopup {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
 
-#successPopup {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
+    #successPopup button {
+        margin-top: 10px;
+    }
 
-#successPopup button {
-    margin-top: 10px;
-}
     /* Hiển thị nền tối khi form xuất hiện */
     .modal-overlay {
         position: fixed;
@@ -227,6 +236,7 @@
         from {
             background: rgba(0, 0, 0, 0);
         }
+
         to {
             background: rgba(0, 0, 0, 0.5);
         }
@@ -238,16 +248,15 @@
             transform: scale(0.9);
             opacity: 0;
         }
+
         to {
             transform: scale(1);
             opacity: 1;
         }
     }
 
-       /* Đóng cuộn khi form mở */
-       body.modal-open {
+    /* Đóng cuộn khi form mở */
+    body.modal-open {
         overflow: hidden;
     }
-
- 
 </style>

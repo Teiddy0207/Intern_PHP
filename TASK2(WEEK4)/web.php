@@ -114,9 +114,10 @@ Route::group(
         //codeQuangAnh: đếm số lượng học sinh có thông tin liên lạc trong hộp trường và hộp lớp 
         Route::get(uri: '/api/getCountSchool', action: 'MarketingController@getCountSchool');
         Route::get(uri: '/api/getCountClass', action: 'MarketingController@getCountClass');
-        //store feedback
+        //API store feedback
         Route::post('/api/feedback/store',  'MarketingController@storeFeedback');
-
+        //API phân loại key vào parent key 
+        Route::get('/api/feedback/parents' , 'MarketingController@getParentFeedbacks');
 
 
         Route::resource('/user', 'UsersController')->middleware('can:infoUser');

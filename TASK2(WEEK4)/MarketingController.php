@@ -27,7 +27,7 @@ class MarketingController extends Controller
 {
     //code lay so lu
 
-    public function getCountSchool()
+public function getCountSchool()
     {
 
         $hotlinePhone = '1800599989';
@@ -49,9 +49,9 @@ class MarketingController extends Controller
 
        
 
-    }
+}
 
-    public function getCountClass(Request $request)
+public function getCountClass(Request $request)
     {
 
         $hotlinePhone = '1800599989';
@@ -77,30 +77,14 @@ class MarketingController extends Controller
         return response()->json(['classes' => $classes]);
 
  
-    }
-
-
-//     public function storeFeedback(Request $request)
-//     {
-//         $request -> validate ([
-//             'description' => 'required|string|max:1000',
-//         ]);
-//        // return $request -> all();
-//        $feedback = SaleFeedback::create([
-//         'description' => $request->input('description'),
-   
-//     ]);
-//     return response()->json(['success' => true, 'feedback' => $feedback]);
-
-// //         return redirect() -> route('admin.marketing.index');
-
-//     }
+}
 
 
 public function storeFeedback(Request $request)
 {
     $validator = Validator::make($request->all(), [
         'feedbackContent' => 'required|string|max:1000',
+        'parent_key' => 'nullable|integer', 
     ]);
 
     if ($validator->fails()) {
@@ -116,11 +100,27 @@ public function storeFeedback(Request $request)
     // Tạo một bản ghi mới cho phản hồi
     $feedback = new SaleFeedback();
     $feedback->description = $request->input('feedbackContent'); // Sử dụng description
-    $feedback->parent_key = 0; // Đặt parent_key là 0
+    $feedback->parent_key = $request->input('parent_key', 0); // Sử dụng parent_key từ request, mặc định là 0  
     $feedback->key = $newKey; // Gán giá trị key mới
     $feedback->save();
 
     return response()->json(['message' => 'Phản hồi đã được lưu thành công!'], 200);
+}
+
+public function getParentFeedbacks()
+{
+    $parentFeedbacks = SaleFeedback::where('parent_key', 0)
+                                    ->whereBetween('key', [1,5])
+                                    ->get();
+    return response()->json(['feedbacks' => $parentFeedbacks], 200);
+
+
+                         
+}
+
+public function getKeyParentFeedbacks($key)
+{
+
 }
 
 
